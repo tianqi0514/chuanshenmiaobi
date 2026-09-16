@@ -14,6 +14,7 @@
 - 当前页面只展示真实执行结果；尚未运行的步骤明确显示“尚未运行”。
 - 每一步都可查看原理、写作价值和安全边界。
 - 模型只生成候选；程序验证引用 ID，Fact 不会被模型直接标记为已核验。
+- 页面数据按项目隔离并持久化；刷新或容器重启后会恢复最近项目的最新成功运行。
 
 ## 本地启动
 
@@ -25,6 +26,8 @@ docker compose up --build
 访问：<http://localhost:8101/>
 
 API 健康检查：<http://localhost:8100/health>
+
+首次进入时新建项目，再在该项目中上传材料。Docker 默认将项目、运行结果和源文件保存到 `miaobi-data` 命名卷，不依赖浏览器临时状态。不要通过删除 Volume 清理数据。
 
 ## 模型配置
 
@@ -66,4 +69,4 @@ npm run dev
 - DeepSeek Harness: `cd5ef8148158c3a752a658978873241fdf8e2bbc`
 - Plate: `8f65d77f8b4709833436e63661e4d061f709258f`
 
-详见 [架构边界](docs/ARCHITECTURE.md)、[五层抽取设计](docs/FIVE_LAYER_EXTRACTION.md)、[真实模型测试](docs/REAL_MODEL_TEST.md) 和 [代码复用审计](docs/REUSE_AUDIT.md)。
+详见 [架构边界](docs/ARCHITECTURE.md)、[五层抽取设计](docs/FIVE_LAYER_EXTRACTION.md)、[项目持久化](docs/PROJECT_PERSISTENCE.md)、[真实模型测试](docs/REAL_MODEL_TEST.md) 和 [代码复用审计](docs/REUSE_AUDIT.md)。

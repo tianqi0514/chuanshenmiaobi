@@ -4,8 +4,13 @@ services:
       context: .
       dockerfile: Dockerfile.api
     env_file: .env
+    environment:
+      MIAOBI_DATABASE_URL: sqlite:////data/miaobi.db
+      MIAOBI_STORAGE_ROOT: /data/uploads
     ports:
       - "${API_PORT:-8100}:8100"
+    volumes:
+      - miaobi-data:/data
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8100/health')"]
       interval: 10s
@@ -19,3 +24,5 @@ services:
     ports:
       - "8101:80"
 
+volumes:
+  miaobi-data:

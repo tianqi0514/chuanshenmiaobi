@@ -19,6 +19,7 @@ dependencies = [
   "beautifulsoup4==4.13.5",
   "chardet==5.2.0",
   "httpx==0.28.1",
+  "sqlalchemy==2.0.43",
 ]
 
 [project.optional-dependencies]

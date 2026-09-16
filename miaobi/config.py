@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     llm_timeout_seconds: float = Field(default=120, alias="MIAOBI_LLM_TIMEOUT_SECONDS")
     llm_max_tokens: int = Field(default=4096, alias="MIAOBI_LLM_MAX_TOKENS")
     llm_enable_thinking: bool = Field(default=False, alias="MIAOBI_LLM_ENABLE_THINKING")
+    database_url: str = Field(default="sqlite:///./.data/miaobi.db", alias="MIAOBI_DATABASE_URL")
+    storage_root: str = Field(default="./.data/uploads", alias="MIAOBI_STORAGE_ROOT")
 
     @property
     def llm_configured(self) -> bool:

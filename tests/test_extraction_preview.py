@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import uuid
 from types import SimpleNamespace
 
 from fastapi.testclient import TestClient
@@ -105,3 +106,37 @@ def test_sample_style_extracts_structure_but_never_business_facts() -> None:
     steps = {step["key"]: step for step in result["steps"]}
     assert steps["sample_profile"]["count"] == 1
     assert all(steps[key]["status"] == "not_required" for key in ("entity", "claim", "fact", "relation", "metric"))
+
+
+def test_projects_persist_runs_and_isolate_results(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    async def fake_run(document, *, material_role, client):  # type: ignore[no-untyped-def]
+        return build_preview(document, material_role=material_role)
+
+    monkeypatch.setattr("apps.api.routes.projects.run_model_extraction", fake_run)
+    suffix = uuid.uuid4().hex[:8]
+    with TestClient(app) as client:
+        first = client.post("/api/v1/projects", json={"name": f"项目甲-{suffix}"})
+        second = client.post("/api/v1/projects", json={"name": f"项目乙-{suffix}"})
+        assert first.status_code == 200
+        assert second.status_code == 200
+        first_id = first.json()["id"]
+        second_id = second.json()["id"]
+
+        created_run = client.post(
+            f"/api/v1/projects/{first_id}/extractions/run",
+            data={"material_role": "task_data"},
+            files={"file": ("项目简报.md", "# 项目简报\n测试项目已启动。".encode(), "text/markdown")},
+        )
+        assert created_run.status_code == 200, created_run.text
+        run_id = created_run.json()["id"]
+        assert "source_path" not in created_run.json()
+        assert len(client.get(f"/api/v1/projects/{first_id}/runs").json()) == 1
+        assert client.get(f"/api/v1/projects/{second_id}/runs").json() == []
+        assert client.get(f"/api/v1/projects/{second_id}/runs/{run_id}").status_code == 404
+
+    with TestClient(app) as restarted_client:
+        projects = restarted_client.get("/api/v1/projects").json()
+        assert any(project["id"] == first_id for project in projects)
+        restored = restarted_client.get(f"/api/v1/projects/{first_id}/runs/{run_id}")
+        assert restored.status_code == 200
+        assert restored.json()["result"]["document"]["filename"] == "项目简报.md"
