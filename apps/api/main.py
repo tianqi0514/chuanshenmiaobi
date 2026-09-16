@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from apps.api.routes.extraction import router as extraction_router
+from apps.api.routes.models import router as models_router
 
 
 app = FastAPI(title="传神妙笔 API", version="0.1.0")
@@ -15,9 +16,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(extraction_router, prefix="/api/v1")
+app.include_router(models_router, prefix="/api/v1")
 
 
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok", "service": "chuanshenmiaobi-api"}
-

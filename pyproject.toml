@@ -18,10 +18,11 @@ dependencies = [
   "openpyxl==3.1.5",
   "beautifulsoup4==4.13.5",
   "chardet==5.2.0",
+  "httpx==0.28.1",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest==8.4.2", "httpx==0.28.1", "ruff==0.12.12"]
+dev = ["pytest==8.4.2", "ruff==0.12.12"]
 semantica = ["semantica @ git+https://github.com/semantica-agi/semantica.git@cce5ea177cbac29a526effa546219c48f8ec36f4"]
 
 [tool.setuptools.packages.find]
