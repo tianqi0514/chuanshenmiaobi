@@ -1,0 +1,10 @@
+FROM python:3.11-slim
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+COPY pyproject.toml README.md ./
+COPY apps ./apps
+COPY miaobi ./miaobi
+RUN pip install --no-cache-dir --no-deps "git+https://github.com/semantica-agi/semantica.git@cce5ea177cbac29a526effa546219c48f8ec36f4" \
+    && pip install --no-cache-dir .
+EXPOSE 8100
+CMD ["uvicorn", "apps.api.main:app", "--host", "0.0.0.0", "--port", "8100"]

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chuanshenmiaobi"
+version = "0.1.0"
+description = "Evidence-bound professional writing workbench"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi==0.141.1",
+  "uvicorn[standard]==0.34.0",
+  "pydantic==2.13.5",
+  "pydantic-settings==2.8.1",
+  "python-multipart==0.0.20",
+  "pypdf==6.0.0",
+  "python-docx==1.2.0",
+  "openpyxl==3.1.5",
+  "beautifulsoup4==4.13.5",
+  "chardet==5.2.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==8.4.2", "httpx==0.28.1", "ruff==0.12.12"]
+semantica = ["semantica @ git+https://github.com/semantica-agi/semantica.git@cce5ea177cbac29a526effa546219c48f8ec36f4"]
+
+[tool.setuptools.packages.find]
+include = ["apps*", "miaobi*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
